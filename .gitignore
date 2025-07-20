@@ -32,22 +32,21 @@ old_requirements.txt
 venv310requirements.txt
 requirements.txt
 
-# --- Vector DB / generated index ---
-data/faiss_products.index
-data/faiss_products_metadata.pkl
-
 # --- Optional output files not used in production ---
 data/products_2025-07-16_15-52-48.json
 data/products.json
 data/outlets_fixed.csv
 outlets.csv
 
-# Local/dev artifacts
+# Ignore all .pkl and .index files by default
 *.pkl
 *.index
 *.sqlite3
 *.csv
 
+# But keep the ones needed for deployment
+!data/faiss_products.index
+!data/faiss_products_metadata.pkl
 
 # --- Drafts / notes ---
 part2readme.txt
