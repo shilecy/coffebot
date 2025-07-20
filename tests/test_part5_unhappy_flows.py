@@ -7,6 +7,7 @@ def test_outlet_tool_missing_query():
 
     # Make sure the tool responds with a helpful error message
     assert "no query provided" in response.lower()
+    print(f"Tool output: {response}")
 
 from chatbot_app.tools.calculator import calculate
 
@@ -16,6 +17,7 @@ def test_calculator_tool_missing_expression():
 
     # Should return a helpful error message, not crash
     assert "no expression provided" in response.lower()
+    print(f"Tool output: {response}")
 
 
 from unittest.mock import patch
@@ -27,6 +29,7 @@ def test_product_tool_api_downtime():
 
         response = rag_tool.invoke({"query": "Tell me about stainless steel bottles"})
         assert "ZUS server is currently unavailable" in response
+        print(f"Tool output: {response}")
 
 from chatbot_app.tools.outlets import outlet_tool, OutletTool
 
@@ -40,5 +43,5 @@ def test_outlet_tool_malicious_input():
         or "couldn't" in response.lower()
         or "suspicious" in response.lower()
     )
-
+    print(f"Tool output: {response}")
 
