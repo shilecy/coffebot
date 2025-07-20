@@ -170,14 +170,6 @@ This chatbot system is designed with modularity and extensibility in mind, imple
 [Final Answer Returned to User]
 ```
 
-### Agent Flow
-
-```
-                                      If math → Calculator tool
-User input → LangChain agent evaluates intent -> Agent routes request to the appropriate tool: If product info → /products (RAG search) -> Agent returns result as conversational reply.
-                                      If outlet query → /outlets (Text2SQL)
-```
-
 -----
 
 ## Part 1: Sequential Conversation with Memory
@@ -707,4 +699,4 @@ pytest tests/test_part5_unhappy_flows.py -v
 
 This project was developed solely for the purpose of a technical assessment and educational demonstration. It includes data scraped from the publicly available ZUS Coffee website strictly for non-commercial, research, and learning purposes.
 
-All trademarks, logos, and brand names are the property of their respective owners. If you are a representative of ZUS Coffee and would like your data removed or this project modified, please feel free to reach out via the contact details in this repository.
+All trademarks, logos, and brand names are the property of their respective owners. 
