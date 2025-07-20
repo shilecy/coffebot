@@ -30,7 +30,7 @@ Thumbs.db
 # Old/backup configs
 old_requirements.txt
 venv310requirements.txt
-requirements.txt
+
 
 # --- Optional output files not used in production ---
 data/products_2025-07-16_15-52-48.json
