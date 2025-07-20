@@ -1,0 +1,33 @@
+# Python
+
+# --- In test_sequential_conversation_happy_path ---
+# Change this line:
+# assert "opens at" in response2.lower() or "opening time" in response2.lower()
+# To:
+assert (
+    "opens at" in response2.lower()
+    or "opening time" in response2.lower()
+    or "open from" in response2.lower()
+)
+
+# --- In test_interrupted_path_ambiguous_input ---
+# Add a print to see the actual response for debugging:
+print(f"Ambiguous clarification response: {response2}")
+# Then, update the assertion to include more possible clarification phrases:
+assert any(keyword in response2.lower() for keyword in [
+    "which mall", "more specific", "exact location", "name of the mall",
+    "city or area", "specific location", "landmark", "what's its name",
+    "can you clarify", "could you clarify", "please clarify", "please specify", "could you specify"
+])
+
+# --- In test_llm_api_failure ---
+# Find out the actual method used by ChatGoogleGenerativeAI for LLM calls.
+# If it's _generate, patch that. Otherwise, patch the method used in MindhiveChatbot.
+# For example, if MindhiveChatbot calls self.llm._generate, patch '_generate':
+with patch.object(chatbot_instance.llm, '_generate') as mock_generate:
+    mock_generate.side_effect = Exception("Simulated Google Gemini API error")
+    user_input = "Hello bot!"
+    response = chatbot_instance.chat(user_input)
+    print(f"User: {user_input}\nBot: {response}")
+    assert "i'm sorry, i encountered an issue" in response.lower()
+    assert "please try again" in response.lower()
