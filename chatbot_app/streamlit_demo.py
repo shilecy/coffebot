@@ -30,6 +30,13 @@ from chatbot_app.tools.rag_placeholder import zus_info_retriever
 load_dotenv()
 print("Environment variables loaded.")
 
+# Works on both local and Streamlit Cloud
+GOOGLE_API_KEY = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
+if not GOOGLE_API_KEY:
+    st.error("❌ GOOGLE_API_KEY not found. Please set it in .env (local) or secrets (Streamlit Cloud).")
+    st.stop()
+
 # --- Wrapper Classes for Part 3 and Part 4 ---
 class MindhiveChatbotPart3Wrapper:
     def __init__(self, llm: BaseChatModel = None, memory_obj: ConversationBufferMemory = None):
