@@ -27,8 +27,14 @@ from chatbot_app.tools.outlets import outlet_tool
 from chatbot_app.tools.rag_placeholder import zus_info_retriever
 
 # Load environment variables (like GOOGLE_API_KEY)
-load_dotenv()
-print("Environment variables loaded.")
+# Only try to load dotenv if running locally (st.secrets is empty)
+if not st.secrets:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        print("✅ Loaded .env locally")
+    except ImportError:
+        print("⚠️ dotenv not available — skipping .env load")
 
 # Works on both local and Streamlit Cloud
 GOOGLE_API_KEY = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
