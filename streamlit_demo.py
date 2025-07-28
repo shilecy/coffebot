@@ -75,7 +75,7 @@ print("Streamlit title and markdown displayed.")
 # --- Define available chatbot modes and their corresponding classes/wrappers ---
 CHATBOT_MODES = {
     "Part 1: Simple Conversation": MindhiveChatbotPart1,
-    "Part 2: Agent with Tools (Calculator & ZUS Info)": MindhiveChatbotPart2,
+    "Part 2: Agent with Tools (Calculator & Info placeholder)": MindhiveChatbotPart2,
     "Part 3: Dedicated Calculator Agent": MindhiveChatbotPart3Wrapper,
     "Part 4: Advanced Agent with Multiple Tools": MindhiveChatbotPart4Wrapper,
 }
