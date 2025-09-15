@@ -98,9 +98,9 @@ This chatbot system is designed with modularity and extensibility in mind, imple
 │   └── __pycache__
 │   └── __init__.py
 │   └── chatbot_part1.py    # Sequential conversation with memory
-│   └── chatbot_part2.py    # Agentic planning logic
+│   └── chatbot_part2.py    # Agentic planning logic (calculator + rag placeholder)
 │   └── chatbot_part3.py    # Tool integration (calculator)
-│   └── chatbot_part4.py    # Retrieval-augmented generation (RAG) + text-to-SQL
+│   └── chatbot_part4.py    # Full agent integration (Calculator, Retrieval-augmented generation (RAG) (product) + text-to-SQL (outlets))
 │   └── streamlit_demo.py
 │   └── tools/
 │   │   └── calculator.py
@@ -135,7 +135,7 @@ This chatbot system is designed with modularity and extensibility in mind, imple
 | Vector Store                  | FAISS (in-memory)                 | Lightweight and easy to use for small datasets, but not scalable to millions of documents.                                                                                                |
 | SQL Backend                   | SQLite + Text-to-SQL via Gemini   | No need to manage a full database server, but depends on LLM's reliability and structured prompt.                                                                                         |
 | Error Handling (Part 5)       | Manual fallback responses         | Good for demo robustness, but limited resilience under real-world failures.                                                                                                               |
-| File Structure                | One script per feature (`chatbot_partX`)| Easy to test/debug in isolation, but not DRY for shared logic.                                                                                                                            |
+| File Structure                | One script per feature (`chatbot_partX`)| Easy to test/debug in isolation                                                                                                                          |
 
 -----
 
@@ -258,81 +258,6 @@ This is the code powering the actual `/calculator` HTTP endpoint. It lives in:
 
 #### a. Calculator endpoint in `app/main.py`
 
-```python
-from pydantic import BaseModel
-
-class CalcRequest(BaseModel):
-    expression: str
-
-@app.post("/calculator")
-def calculator_endpoint(req: CalcRequest):
-    return calculate_expression(req.expression)
-```
-
-#### b. `app/calculator_logic.py`
-
-```python
-import operator
-
-# Map supported operators to functions
-ops = {
-    '+': operator.add,
-    '-': operator.sub,
-    '*': operator.mul,
-    '/': operator.truediv,
-}
-
-def calculate_expression(expr: str):
-    try:
-        # Very basic safety: only allow digits, spaces, and operators
-        allowed_chars = set("0123456789+-*/(). ")
-        if not set(expr).issubset(allowed_chars):
-            return {"error": "Invalid characters in expression"}
-
-        # Evaluate the expression safely
-        result = eval(expr, {"__builtins__": {}}, ops)
-        return {"result": result}
-    except Exception as e:
-        return {"error": str(e)}
-```
-
-#### c. `chatbot_app/tools/calculator.py`
-
-```python
-from pydantic import BaseModel, Field
-from langchain.tools import tool
-
-class CalculatorTool(BaseModel):
-    expression: str = Field(..., description="Mathematical expression to evaluate")
-
-@tool("Calculator", args_schema=CalculatorTool)
-def calculate(expression: str) -> str:
-    """Evaluates a math expression like '2 + 3'."""
-    if not expression or expression.strip() == "":
-        return "Error: No expression provided. Please enter a valid mathematical expression."
-
-    try:
-        result = eval(expression)
-        return str(result)
-    except Exception as e:
-        return f"Error: Could not evaluate the expression. {e}"
-```
-
-For Part 3, the chatbot is `chatbot_app/chatbot_part3.py`. The calculator tool API integration was done under Part 4, hence in `chatbot_app/chatbot_part4.py` you will see the integration:
-
-```python
-# Import your tools
-from chatbot_app.tools.calculator import calculate
-from chatbot_app.tools.products import rag_tool
-from chatbot_app.tools.outlets import outlet_tool
-
-# 2. Tool registry
-tools = [
-    calculate,
-    rag_tool,
-    outlet_tool,
-]
-```
 
 ### For Testing:
 
@@ -376,7 +301,6 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
       * Outlet Tool (Text-to-SQL) for querying ZUS Coffee outlet information.
       * Returns an AI-generated natural language response derived from the tool's execution.
       * The core chatbot logic and routing are managed within app/main.py (via run_chatbot_logic) and chatbot_app/tools/.
-
 
   * **GET `/products?query=<user_question>`**
 
@@ -463,12 +387,6 @@ If you cannot load, try changing the port:
 ```bash
 uvicorn app.main:app --reload --port 8001
 ```
-
-### Integration Code Overview
-
-All endpoints are located in `app/main.py`.
-
-The chatbot's ability to respond to diverse queries is orchestrated by a LangChain-based agent (implemented in `chatbot_app/chatbot_part4.py`), which intelligently selects the appropriate backend tool. These tools, located in `chatbot_app/tools/`, wrap and invoke the functionalities exposed by the FastAPI backend API endpoints.
 
 #### Chatbot Endpoint (for API interaction)
 
@@ -638,16 +556,6 @@ Final Answer: There are no ZUS Coffee outlets in Antarctica.
 Thought: I now know the final answer.
 Final Answer: There are no ZUS Coffee outlets in Antarctica.
 
-### ⚠️ Note on Agent Output Format & Testing Consistency
-
-This implementation uses the Gemini 2.5 Flash model via LangChain's `create_react_agent()` to handle tool-based queries. While the solution adheres to LangChain’s expected `action`/`observation`/`final-answer` format, Gemini’s output can sometimes be inconsistent due to:
-
-  * Variability in generation output (e.g., occasionally omitting `Action:` or `Final Answer:`).
-  * Internal temperature or token sampling behavior.
-  * Non-determinism across runs or environments.
-
-As a result, the integration tests may pass or fail unpredictably across different machines or runs, even if no code changes are made.
-
 -----
 
 ## Part 5: Unhappy Flows
@@ -694,6 +602,17 @@ pytest tests/test_part5_unhappy_flows.py -v
 
       * Calculator, RAG, and Text2SQL tools are isolated, so one failure won’t affect the rest.
       * Errors from one tool don’t crash the entire chatbot.
+
+
+### ⚠️ Note on Agent Output Format & Testing Consistency
+
+This implementation uses the Gemini 2.5 Flash model via LangChain's `create_react_agent()` to handle tool-based queries. While the solution adheres to LangChain’s expected `action`/`observation`/`final-answer` format, Gemini’s output can sometimes be inconsistent due to:
+
+  * Variability in generation output (e.g., occasionally omitting `Action:` or `Final Answer:`).
+  * Internal temperature or token sampling behavior.
+  * Non-determinism across runs or environments.
+
+As a result, the integration tests may pass or fail unpredictably across different machines or runs, even if no code changes are made.
 
 -----
 
