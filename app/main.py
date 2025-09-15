@@ -2,7 +2,7 @@
 from fastapi import FastAPI, Query, APIRouter
 from pydantic import BaseModel
 from app.rag import semantic_search, summarize_results
-from chatbot_app.chatbot_part4 import chat_4
+from chatbot_app.chatbot_part4 import MindhiveChatbot
 from app.text2sql_outlets import query_outlets_from_db
 from app.calculator_logic import calculate_expression
 from dotenv import load_dotenv
@@ -20,7 +20,7 @@ class ChatRequest(BaseModel):
 async def chatbot_route(req: ChatRequest):
     try:
         # Set a timeout for chatbot logic (e.g., 15 seconds)
-        answer = await asyncio.to_thread(chat_4, req.question)
+        answer = await asyncio.to_thread(MindhiveChatbot, req.question)
         return {"answer": answer}
     except Exception as e:
         return {"error": str(e)}
