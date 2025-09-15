@@ -1,11 +1,14 @@
 import faiss
 import pickle
 import os
+from dotenv import load_dotenv
 
 from sentence_transformers import SentenceTransformer
 from typing import List
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
+
+load_dotenv()
 
 # === Load on startup ===
 DATA_DIR = "data"
@@ -18,6 +21,11 @@ with open(META_PATH, "rb") as f:
     metadata = pickle.load(f)
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
+
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    google_api_key=os.environ.get("GOOGLE_API_KEY")
+)
 
 def semantic_search(query: str, top_k: int = 3) -> List[dict]:
     embedding = model.encode([query])
@@ -41,10 +49,7 @@ def clean_result(r: dict) -> dict:
         "url": r.get("url", "#")
     }
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=os.environ.get("GOOGLE_API_KEY")
-)
+
 
 def summarize_results(query: str, results: List[dict]) -> str:
     print("Results type:", type(results))
