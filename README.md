@@ -294,43 +294,43 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
 
   * **POST `/chatbot>`**
   
-      * Processes incoming natural language questions from the user's request body.
-      * A LangChain-based agent analyzes the query, determining intent and routing the request to the appropriate backend tool:
-      * Calculator Tool for arithmetic operations.
-      * Product Retrieval Tool (RAG) for knowledge base lookups from a FAISS vector store.
-      * Outlet Tool (Text-to-SQL) for querying ZUS Coffee outlet information.
-      * Returns an AI-generated natural language response derived from the tool's execution.
-      * The core chatbot logic and routing are managed within app/main.py (via chat_4) and chatbot_app/tools/.
-  * **Located in:** `app/main.py`.
-  * This endpoint accepts natural language questions from the user. It delegates the question to the LangChain agent, which determines and calls the correct tool (Calculator, ProductTool, or OutletTool) before returning an LLM-generated natural language answer.
+    * **Located in:** `app/main.py`.
+    * Processes incoming natural language questions from the user's request body.
+    * A LangChain-based agent analyzes the query, determining intent and routing the request to the appropriate backend tool:
+    * Calculator Tool for arithmetic operations.
+    * Product Retrieval Tool (RAG) for knowledge base lookups from a FAISS vector store.
+    * Outlet Tool (Text-to-SQL) for querying ZUS Coffee outlet information.
+    * Returns an AI-generated natural language response derived from the tool's execution.
+    * The core chatbot logic and routing are managed within app/main.py (via chat_4) and chatbot_app/tools/.
+    * This endpoint accepts natural language questions from the user. It delegates the question to the LangChain agent, which determines and calls the correct tool (Calculator, ProductTool, or OutletTool) before returning an LLM-generated natural language answer.
 
 * **GET `/products?query=<user_question>`**
 
-      * Retrieves relevant product knowledge base (KB) documents from a FAISS vector store based on the user's query.
-      * Returns an AI-generated summary combining the top-k most relevant product entries.
-      * Powered by semantic search and summarization logic in `app/rag.py`.
-  * **Tool Wrapper:** `chatbot_app/tools/products.py`
-  * **Functionality:** Integrates with the `/products` FastAPI endpoint to perform RAG-based knowledge base lookups.
-  * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/products` \> Vector Search & Summarization \> Response \> Chatbot Response
+    * **Tool Wrapper:** `chatbot_app/tools/products.py`
+    * **Functionality:** Integrates with the `/products` FastAPI endpoint to perform RAG-based knowledge base lookups.
+    * Retrieves relevant product knowledge base (KB) documents from a FAISS vector store based on the user's query.
+    * Returns an AI-generated summary combining the top-k most relevant product entries.
+    * Powered by semantic search and summarization logic in `app/rag.py`.
+    * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/products` \> Vector Search & Summarization \> Response \> Chatbot Response
 
 * **POST `/outlets?query=<nl_query>`**
 
-      * Translates natural language queries into SQL commands using a Text2SQL pipeline.
-      * Executes the generated SQL on a relational database containing ZUS Coffee outlet information.
-      * Returns structured query results (e.g., outlet names, locations, hours).
-      * Implemented via `app/text2sql_outlets.py` and `app/llm_sql_generator.py`.
-  * **Tool Wrapper:** `chatbot_app/tools/outlets.py`
-  * **Functionality:** Integrates with the `/outlets` FastAPI endpoint to translate natural language into SQL and query outlet data.
-  * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/outlets` \> Text2SQL Conversion \> SQL Execution \> Response \> Chatbot Response
+    * **Tool Wrapper:** `chatbot_app/tools/outlets.py`
+    * **Functionality:** Integrates with the `/outlets` FastAPI endpoint to translate natural language into SQL and query outlet data.
+    * Translates natural language queries into SQL commands using a Text2SQL pipeline.
+    * Executes the generated SQL on a relational database containing ZUS Coffee outlet information.
+    * Returns structured query results (e.g., outlet names, locations, hours).
+    * Implemented via `app/text2sql_outlets.py` and `app/llm_sql_generator.py`.
+    * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/outlets` \> Text2SQL Conversion \> SQL Execution \> Response \> Chatbot Response
 
 * **GET `/calculator?expression=<math_expression>`**
 
-      * Safely evaluates mathematical expressions submitted in the query.
-      * Returns the calculated result (e.g., for price comparisons or total cost scenarios).
-      * The core logic is implemented in `app/calculator_logic.py`.
-  * **Tool Wrapper:** `chatbot_app/tools/calculator.py`
-  * **Functionality:** Integrates with the `/calculator` FastAPI endpoint.
-  * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/calculator` \> Calculation Processing \> Response \> Chatbot Response
+    * **Tool Wrapper:** `chatbot_app/tools/calculator.py`
+    * **Functionality:** Integrates with the `/calculator` FastAPI endpoint.
+    * Safely evaluates mathematical expressions submitted in the query.
+    * Returns the calculated result (e.g., for price comparisons or total cost scenarios).
+    * The core logic is implemented in `app/calculator_logic.py`.
+    * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/calculator` \> Calculation Processing \> Response \> Chatbot Response
 
 
 ### 2\. Vector-Store Ingestion and Retrieval for Product KB
