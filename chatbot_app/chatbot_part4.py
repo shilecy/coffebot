@@ -1,10 +1,13 @@
 import os
 from dotenv import load_dotenv
-from langchain.agents import create_react_agent, AgentExecutor
-from langchain.prompts import PromptTemplate
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.agents import create_react_agent, AgentExecutor
 from langchain_core.tools import Tool
+from langchain_core.language_models import BaseChatModel
+
 import requests
 
 # Import your tools
@@ -16,21 +19,44 @@ load_dotenv()
 
 BASE_URL = "http://127.0.0.1:8000"
 
-# LLM
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+class MindhiveChatbot:
+    def __init__(self, llm: BaseChatModel = None, memory_obj: ConversationBufferMemory = None):
+        # Init LLM
+        self.llm = llm or ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
 
-# 2. # 2. Tool registry
-tools = [
-    calculate,
-    rag_tool,
-    outlet_tool,
-]
+        # Init Memory
+        self.memory = memory_obj or ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=False  # For string-based prompts (PromptTemplate)
+        )
 
-# 3. Prompt Template
-# PromptTemplate (string-based)
-prompt = PromptTemplate(
-    input_variables=["input", "agent_scratchpad", "chat_history", "tools", "tool_names"],
-    template="""
+        # Define tools
+        self.tools = [
+            Tool(
+                name="Calculator",
+                func=calculate,
+                description="Use this to perform math or arithmetic calculations."
+            ),
+            Tool(
+                name="ProductInfo",
+                func=rag_tool,
+                description="Use this to answer questions about ZUS Coffee products."
+            ),
+            Tool(
+                name="OutletInfo",
+                func=outlet_tool,
+                description="Use this to answer questions about ZUS Coffee outlets."
+            )
+        ]
+
+        # Tool metadata
+        tool_names = ", ".join([tool.name for tool in self.tools])
+        tool_descriptions = "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])
+
+        # PromptTemplate (string-based)
+        self.prompt = PromptTemplate(
+            input_variables=["input", "agent_scratchpad", "chat_history", "tools", "tool_names"],
+            template="""
 You are a helpful and knowledgeable assistant for ZUS Coffee.
 
 TOOLS:
@@ -123,59 +149,70 @@ User question: {input}
 
 {agent_scratchpad}
 """
-)
+        )
 
-# Memory for conversation
-memory = ConversationBufferMemory(
-    memory_key="chat_history",
-    return_messages=False
-)
+        # Agent
+        self.agent = create_react_agent(
+            llm=self.llm,
+            tools=self.tools,
+            prompt=self.prompt
+        )
 
-# 4. Agent setup
-agent = create_react_agent(
-    llm=llm,
-    tools=tools,
-    prompt=prompt,
-)
+        # AgentExecutor
+        self.agent_executor = AgentExecutor.from_agent_and_tools(
+            agent=self.agent,
+            tools=self.tools,
+            memory=self.memory,
+            verbose=True,
+            return_intermediate_steps=True, 
+            handle_parsing_errors=True,
+            max_iterations=3,
+            agent_kwargs={
+                "tool_names": tool_names,
+                "tools": tool_descriptions
+            }
+        )
 
-agent_executor = AgentExecutor.from_agent_and_tools(
-    agent=agent,
-    tools=tools,
-    memory=memory,
-    verbose=True,
-    return_intermediate_steps=True, 
-    handle_parsing_errors=True,
-    max_iterations=3
-)
+        # Memory for conversation
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=False
+        )
 
-def run_chatbot_logic(user_input: str) -> str:
-    try:
-        response = agent_executor.invoke({"input": user_input})
-        output = response.get("output", "").strip()
+    def chat_4(self, user_input: str) -> str:
+        try:
+            response = self.agent_executor.invoke({"input": user_input})
+            output = response.get("output", "").strip()
 
         # If final output is empty or contains common agent failure messages
-        if not output or "Agent stopped" in output or "try again" in output.lower():
-            steps = response.get("intermediate_steps", [])
-            # Loop backwards through steps to find last meaningful observation
-            for action, observation in reversed(steps):
-                if isinstance(observation, str) and len(observation.strip()) > 30:
-                    return observation.strip()
-            return output or "Sorry, the agent couldn't complete the task."
+            if not output or "Agent stopped" in output or "try again" in output.lower():
+                steps = response.get("intermediate_steps", [])
+                # Loop backwards through steps to find last meaningful observation
+                for action, observation in reversed(steps):
+                    if isinstance(observation, str) and len(observation.strip()) > 30:
+                        return observation.strip()
+                return output or "Sorry, the agent couldn't complete the task."
         
-        return output
+            return output
 
-    except Exception as e:
-        print(f"Error during chat: {e}")
-        return "Sorry, something went wrong. Try again."
+        except Exception as e:
+            print(f"Error during chat: {e}")
+            return "Sorry, something went wrong. Try again."
 
+# CLI testing
 if __name__ == "__main__":
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("Missing GOOGLE_API_KEY in .env.")
+        exit()
+
     print("ZUS Coffee Chatbot (Gemini 2.5 Flash, Agentic)")
     print("Type 'exit' to quit.")
-    chatbot = True
-    while chatbot:
+    chatbot = MindhiveChatbot()
+
+    while True:
         user_input = input("You: ")
         if user_input.lower() == "exit":
             print("Goodbye!")
             break
-        response = run_chatbot_logic(user_input)
+        response = chatbot.chat_4(user_input)
         print(f"Bot: {response}")
