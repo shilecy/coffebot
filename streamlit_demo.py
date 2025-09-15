@@ -17,8 +17,8 @@ from langchain_core.tools import Tool
 
 from chatbot_app.chatbot_part1 import MindhiveChatbot as MindhiveChatbotPart1
 from chatbot_app.chatbot_part2 import MindhiveChatbot as MindhiveChatbotPart2
-from chatbot_app.chatbot_part3 import run_calculator_agent
-from chatbot_app.chatbot_part4 import run_chatbot_logic
+from chatbot_app.chatbot_part3 import MindhiveChatbot as MindhiveChatbotPart3
+from chatbot_app.chatbot_part4 import MindhiveChatbot as MindhiveChatbotPart4
 
 # Import your tools
 from chatbot_app.tools.calculator import calculate
@@ -43,24 +43,6 @@ if not GOOGLE_API_KEY:
     st.error("❌ GOOGLE_API_KEY not found. Please set it in .env (local) or secrets (Streamlit Cloud).")
     st.stop()
 
-# --- Wrapper Classes for Part 3 and Part 4 ---
-class MindhiveChatbotPart3Wrapper:
-    def __init__(self, llm: BaseChatModel = None, memory_obj: ConversationBufferMemory = None):
-        print("Initializing MindhiveChatbotPart3Wrapper (no direct LLM/memory usage here)...")
-        pass
-
-    def chat(self, user_input: str) -> str:
-        return run_calculator_agent(user_input)
-
-class MindhiveChatbotPart4Wrapper:
-    def __init__(self, llm: BaseChatModel = None, memory_obj: ConversationBufferMemory = None):
-        print("Initializing MindhiveChatbotPart4Wrapper (no direct LLM/memory usage here)...")
-        pass
-
-    def chat(self, user_input: str) -> str:
-        return run_chatbot_logic(user_input)
-
-
 # --- Streamlit App Setup ---
 print("Setting Streamlit page config...")
 st.set_page_config(page_title="MindHive Chatbot Demo", layout="centered")
@@ -76,8 +58,8 @@ print("Streamlit title and markdown displayed.")
 CHATBOT_MODES = {
     "Part 1: Simple Conversation": MindhiveChatbotPart1,
     "Part 2: Agent with Tools (Calculator & Info placeholder)": MindhiveChatbotPart2,
-    "Part 3: Dedicated Calculator Agent": MindhiveChatbotPart3Wrapper,
-    "Part 4: Advanced Agent with Multiple Tools": MindhiveChatbotPart4Wrapper,
+    "Part 3: Dedicated Calculator Agent": MindhiveChatbotPart3,
+    "Part 4: Advanced Agent with Multiple Tools": MindhiveChatbotPart4,
 }
 print("Chatbot modes defined.")
 
@@ -109,7 +91,7 @@ def get_llm_and_chatbot_instance(mode_name: str, chatbot_class: type) -> tuple[B
     elif "Part 3" in mode_name or "Part 4" in mode_name:
         temperature = 0.2
     else:
-        temperature = 0.5 # Default for other parts if not specified yet
+        temperature = 0.2 # Default for other parts if not specified yet
 
     print(f"Initializing ChatGoogleGenerativeAI with model='gemini-2.5-flash', temperature={temperature}...")
     llm_instance = ChatGoogleGenerativeAI(
