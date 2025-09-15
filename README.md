@@ -301,7 +301,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
     * Product Retrieval Tool (RAG) for knowledge base lookups from a FAISS vector store.
     * Outlet Tool (Text-to-SQL) for querying ZUS Coffee outlet information.
     * Returns an AI-generated natural language response derived from the tool's execution.
-    * The core chatbot logic and routing are managed within app/main.py (via chat_4) and chatbot_app/tools/.
+    * The core chatbot logic and routing are managed within app/main.py (via MindhiveChatbot) and chatbot_app/tools/.
     * This endpoint accepts natural language questions from the user. It delegates the question to the LangChain agent, which determines and calls the correct tool (Calculator, ProductTool, or OutletTool) before returning an LLM-generated natural language answer.
 
 * **GET `/products?query=<user_question>`**
@@ -323,7 +323,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
     * Implemented via `app/text2sql_outlets.py` and `app/llm_sql_generator.py`.
     * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/outlets` \> Text2SQL Conversion \> SQL Execution \> Response \> Chatbot Response
 
-* **GET `/calculator?expression=<math_expression>`**
+* **POST `/calculator?expression=<math_expression>`**
 
     * **Tool Wrapper:** `chatbot_app/tools/calculator.py`
     * **Functionality:** Integrates with the `/calculator` FastAPI endpoint.
