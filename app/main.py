@@ -19,11 +19,13 @@ class ChatRequest(BaseModel):
 @app.post("/chatbot")
 async def chatbot_route(req: ChatRequest):
     try:
-        # Set a timeout for chatbot logic (e.g., 15 seconds)
-        answer = await asyncio.to_thread(MindhiveChatbot, req.question)
+        bot = MindhiveChatbot()
+        # Run chat_4 in a thread so it doesn’t block the event loop
+        answer = await asyncio.to_thread(bot.chat_4, req.question)
         return {"answer": answer}
     except Exception as e:
         return {"error": str(e)}
+
 
 # Products endpoint
 
