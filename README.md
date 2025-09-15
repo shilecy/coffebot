@@ -305,8 +305,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
 * **Located in:** `app/main.py`
 * This endpoint accepts natural language questions from the user. It delegates the question to the LangChain agent, which determines and calls the correct tool (Calculator, ProductTool, or OutletTool) before returning an LLM-generated natural language answer.
 
-
-  * **GET `/products?query=<user_question>`**
+* **GET `/products?query=<user_question>`**
 
       * Retrieves relevant product knowledge base (KB) documents from a FAISS vector store based on the user's query.
       * Returns an AI-generated summary combining the top-k most relevant product entries.
@@ -316,8 +315,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
 * **Functionality:** Integrates with the `/products` FastAPI endpoint to perform RAG-based knowledge base lookups.
 * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/products` \> Vector Search & Summarization \> Response \> Chatbot Response
 
-
-  * **POST `/outlets?query=<nl_query>`**
+* **POST `/outlets?query=<nl_query>`**
 
       * Translates natural language queries into SQL commands using a Text2SQL pipeline.
       * Executes the generated SQL on a relational database containing ZUS Coffee outlet information.
@@ -328,7 +326,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
 * **Functionality:** Integrates with the `/outlets` FastAPI endpoint to translate natural language into SQL and query outlet data.
 * **Flow:** User Query \> Chatbot Agent decides \> API Request to `/outlets` \> Text2SQL Conversion \> SQL Execution \> Response \> Chatbot Response
 
-  * **GET `/calculator?expression=<math_expression>`**
+* **GET `/calculator?expression=<math_expression>`**
 
       * Safely evaluates mathematical expressions submitted in the query.
       * Returns the calculated result (e.g., for price comparisons or total cost scenarios).
