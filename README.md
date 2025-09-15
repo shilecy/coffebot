@@ -129,7 +129,7 @@ This chatbot system is designed with modularity and extensibility in mind, imple
 | Area                          | Choice Made                       | Trade-off / Rationale                                                                                                                                                                             |
 | :---------------------------- | :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | LLM Provider                  | Google Gemini                     | Fast + cheap (Gemini Flash), but limited control vs. local models.                                                                                                                        |
-| AI framework                  | Yes                               | Rapid development & tool abstraction, but can be verbose and fragile at times.                                                                                                            |
+| AI framework                  | Langchain                         | Rapid development & tool abstraction, but can be verbose and fragile at times.                                                                                                            |
 | Streamlit UI                  | Yes                               | Simple to build demos, but not suitable for production-scale interfaces.                                                                                                                  |
 | Product Info Retrieval        | RAG via FAISS + Gemini            | Enables flexible answers based on knowledge retrieval.                                                                                                                                    |
 | Vector Store                  | FAISS (in-memory)                 | Lightweight and easy to use for small datasets, but not scalable to millions of documents.                                                                                                |
@@ -292,7 +292,7 @@ python -m chatbot_app.chatbot_part3
 
 A complete FastAPI application exposing the following endpoints with full OpenAPI (Swagger) documentation:
 
-  * **POST /chatbot****
+  * **POST `/chatbot>`**
 
       * Processes incoming natural language questions from the user's request body.
       * A LangChain-based agent analyzes the query, determining intent and routing the request to the appropriate backend tool:
