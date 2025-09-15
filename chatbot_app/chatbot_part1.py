@@ -62,7 +62,7 @@ Human: {human_input}
 AI:"""
 
 
-# Simple interactive loop for testing from the command line
+# CLI testing
 if __name__ == "__main__":
     # Ensure GOOGLE_API_KEY is set in your .env file in the project root
     # e.g., GOOGLE_API_KEY="your_api_key_here"

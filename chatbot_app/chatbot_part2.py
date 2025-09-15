@@ -12,7 +12,6 @@ from langchain_core.language_models import BaseChatModel
 from chatbot_app.tools.calculator import calculate
 from chatbot_app.tools.rag_placeholder import zus_info_retriever
 
-# Load .env
 load_dotenv()
 
 
@@ -76,9 +75,13 @@ Instead, ask a clear follow-up question first to clarify what they’re looking 
 
 If you clearly understand the user's question and know that a tool is needed, use this format:
 
+Use this format:
 Thought: Explain what you're doing.
 Action: <ToolName>
 Action Input: <specific input to the tool>
+
+Observation: <result>
+Final Answer: <response to user>
 
 When you get the tool’s result, respond like this:
 
@@ -129,7 +132,7 @@ User question: {input}
             }
         )
 
-    def chat(self, user_input: str) -> str:
+    def chat_2(self, user_input: str) -> str:
         try:
             response = self.agent_executor.invoke({"input": user_input})
             return response["output"].strip()
@@ -138,7 +141,7 @@ User question: {input}
             return "Sorry, something went wrong. Try again."
 
 
-# CLI entrypoint
+# CLI testing
 if __name__ == "__main__":
     if not os.getenv("GOOGLE_API_KEY"):
         print("Missing GOOGLE_API_KEY in .env.")
@@ -158,5 +161,5 @@ if __name__ == "__main__":
         if user_input.lower() == "exit":
             print("Goodbye!")
             break
-        response = chatbot.chat(user_input)
+        response = chatbot.chat_2(user_input)
         print(f"Bot: {response}")
