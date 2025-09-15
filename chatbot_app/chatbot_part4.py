@@ -132,10 +132,6 @@ Thought: The user asked "Is there any outlet in Shah Alam?" which means they wan
 Action: OutletInfo
 Action Input: Is there any outlet in Shah Alam?
 
-Thought: The user asked "Is there any outlet in Shah Alam?" which means they want outlet info.
-Action: OutletInfo
-Action Input: Is there any outlet in Shah Alam?
-
 Thought: The user asked "Do you sell mugs or tumblers?" which means they are asking about product categories.
 Action: ProductInfo
 Action Input: mugs or tumblers
