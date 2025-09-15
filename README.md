@@ -62,7 +62,7 @@ python -m uvicorn app.main:app --reload
 #### Option B: Run Local Chatbot Demo (Streamlit)
 
 ```bash
-streamlit run chatbot_app/streamlit_demo.py
+streamlit run streamlit_demo.py
 ```
 
   * Opens at: `http://localhost:8501`
@@ -78,10 +78,10 @@ streamlit run chatbot_app/streamlit_demo.py
 Each chatbot part can be run directly for testing purposes. Example commands:
 
 ```bash
-python chatbot_app/chatbot_part1.py
-python chatbot_app/chatbot_part2.py
-python chatbot_app/chatbot_part3.py
-python chatbot_app/chatbot_part4.py
+python -m chatbot_app.chatbot_part1
+python -m chatbot_app.chatbot_part2
+python -m chatbot_app.chatbot_part3
+python -m chatbot_app.chatbot_part4
 ```
 
 Each script simulates a sample interaction or uses test inputs to demonstrate its specific feature (e.g., memory, planning, tool use, RAG/text2sql).
