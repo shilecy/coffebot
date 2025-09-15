@@ -415,7 +415,7 @@ uvicorn app.main:app --reload --port 8001
 
 #### SUCCESS CASES
 
-To run the tests:
+1. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_success_cases[What\'s 25 * 4 + 100?-expected_keywords0]'
@@ -431,7 +431,7 @@ Final Answer: 25 \* 4 + 100 is 200.
 
 -----
 
-To run the tests:
+2. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_success_cases[Which bottles are BPA-free?-expected_keywords1]'
@@ -462,7 +462,7 @@ Final Answer: All of the ZUS All Day Cups listed are BPA-free. This includes:
 
 -----
 
-To run the tests:
+3. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_success_cases[List all outlets in Selangor-expected_keywords2]'
@@ -498,7 +498,7 @@ ZUS Coffee @ Subang Parade
 
 #### FAILURE CASES
 
-To run the tests:
+1. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_failure_cases[Calculate apple + 5-expected_keywords0]'
@@ -513,7 +513,7 @@ Final Answer: I can only calculate numbers. "Apple" is not a number.
 
 -----
 
-To run the tests:
+2. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_failure_cases[Any ZUS products made of gold?-expected_keywords1]'
@@ -535,7 +535,7 @@ Final Answer: products made of gold
 
 -----
 
-To run the tests:
+3. To run the tests:
 
 ```bash
 pytest -s 'tests/test_part4_chatbot_integration.py::test_failure_cases[Are there any ZUS outlets in Antarctica?-expected_keywords2]'
