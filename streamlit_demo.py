@@ -85,7 +85,7 @@ def get_llm_and_chatbot_instance(mode_name: str, chatbot_class: type) -> tuple[B
     print(f"Caching LLM and chatbot instance for {mode_name}. Initializing...")
     # Determine temperature based on the selected mode, as per your original parts
     if "Part 1" in mode_name:
-        temperature = 0.7
+        temperature = 0.5
     elif "Part 2" in mode_name:
         temperature = 0.3
     elif "Part 3" in mode_name or "Part 4" in mode_name:
@@ -137,7 +137,7 @@ for speaker, message in st.session_state[f"chat_history_{selected_mode_name}"]:
         st.markdown(message)
 print("Chat messages displayed.")
 
-# --- User Input and Chat Logic ---
+# --- User Input and Chat Logic --- 
 print("Rendering chat input...")
 if prompt := st.chat_input("Ask me anything...", key=f"user_input_{selected_mode_name}"):
     # Add user message to chat history
@@ -147,12 +147,26 @@ if prompt := st.chat_input("Ask me anything...", key=f"user_input_{selected_mode
 
     with st.spinner("Thinking..."):
         try:
-            response = current_chatbot_instance.chat(prompt)
+            # Try to find the right chat method
+            method = (
+                getattr(current_chatbot_instance, "chat", None)
+                or getattr(current_chatbot_instance, "chat_2", None)
+                or getattr(current_chatbot_instance, "chat_3", None)
+                or getattr(current_chatbot_instance, "chat_4", None)
+            )
+
+            if callable(method):
+                response = method(prompt)
+            else:
+                response = "❌ No available chat method on this chatbot instance."
+
             # Ensure the response is a string before passing to st.markdown
             if not isinstance(response, str):
                 response = str(response)
+
             st.markdown(response)
             st.session_state[f"chat_history_{selected_mode_name}"].append(("Bot", response))
+
         except Exception as e:
             error_message = f"An error occurred while processing your request: {e}"
             st.error(error_message)
