@@ -293,7 +293,7 @@ python -m chatbot_app.chatbot_part3
 A complete FastAPI application exposing the following endpoints with full OpenAPI (Swagger) documentation:
 
   * **POST `/chatbot>`**
-
+  
       * Processes incoming natural language questions from the user's request body.
       * A LangChain-based agent analyzes the query, determining intent and routing the request to the appropriate backend tool:
       * Calculator Tool for arithmetic operations.
@@ -301,7 +301,7 @@ A complete FastAPI application exposing the following endpoints with full OpenAP
       * Outlet Tool (Text-to-SQL) for querying ZUS Coffee outlet information.
       * Returns an AI-generated natural language response derived from the tool's execution.
       * The core chatbot logic and routing are managed within app/main.py (via chat_4) and chatbot_app/tools/.
-  * **Located in:** `app/main.py`
+  * **Located in:** `app/main.py`.
   * This endpoint accepts natural language questions from the user. It delegates the question to the LangChain agent, which determines and calls the correct tool (Calculator, ProductTool, or OutletTool) before returning an LLM-generated natural language answer.
 
 * **GET `/products?query=<user_question>`**
