@@ -45,11 +45,11 @@ if not GOOGLE_API_KEY:
 
 # --- Streamlit App Setup ---
 print("Setting Streamlit page config...")
-st.set_page_config(page_title="MindHive Chatbot Demo", layout="centered")
-st.title("🧠 MindHive Chatbot Demo")
+st.set_page_config(page_title="CoffeeBot Demo", layout="centered")
+st.title("🧠 CoffeeBot Demo")
 
 st.markdown("""
-Welcome to the MindHive Chatbot Demo!
+Welcome to the CoffeeBot Demo!
 Use the dropdown below to switch between different chatbot functionalities.
 """)
 print("Streamlit title and markdown displayed.")

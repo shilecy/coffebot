@@ -22,7 +22,7 @@ BASE_URL = "http://127.0.0.1:8000"
 class MindhiveChatbot:
     def __init__(self, llm: BaseChatModel = None, memory_obj: ConversationBufferMemory = None):
         # Init LLM
-        self.llm = llm or ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
+        self.llm = llm or ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 
         # Init Memory
         self.memory = memory_obj or ConversationBufferMemory(
@@ -162,7 +162,6 @@ User question: {input}
             verbose=True,
             return_intermediate_steps=True, 
             handle_parsing_errors=True,
-            max_iterations=3,
             agent_kwargs={
                 "tool_names": tool_names,
                 "tools": tool_descriptions
