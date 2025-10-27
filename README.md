@@ -1,4 +1,4 @@
-This document provides a comprehensive overview of the Mindhive AI Chatbot Engineer Assessment project. This multi-tool AI chatbot, built with FastAPI, LangChain, and Google Gemini, demonstrates various functionalities, including a Calculator tool, a Product Knowledge Base (RAG), and Outlet Info (Text-to-SQL).
+This document provides a comprehensive overview of the Agentic AI Coffebot project. This multi-tool AI chatbot, built with FastAPI, LangChain, and Google Gemini, demonstrates various functionalities, including a Calculator tool, a Product Knowledge Base (RAG), and Outlet Info (Text-to-SQL).
 
 -----
 
@@ -17,11 +17,6 @@ To set up and run this project, ensure you have the following:
 Follow these steps to get the chatbot up and running:
 
 ### 1\. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/mindhive-chatbot-assessment.git
-cd mindhive-chatbot-assessment
-```
 
 ### 2\. Setup Virtual Environment
 
