@@ -602,6 +602,6 @@ As a result, the integration tests may pass or fail unpredictably across differe
 
 **Disclaimer:**
 
-This project was developed solely for the purpose of a technical assessment and educational demonstration. It includes data scraped from the publicly available ZUS Coffee website strictly for non-commercial, research, and learning purposes.
+This project was developed solely for the purpose of a technical demonstration. It includes data scraped from the publicly available f&b website strictly for non-commercial, research, and learning purposes.
 
 All trademarks, logos, and brand names are the property of their respective owners. 
